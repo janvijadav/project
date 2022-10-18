@@ -1,5 +1,5 @@
 <?php
-	$con = mysqli_connect("localhost","root","","janvi");
+	$con = mysqli_connect("localhost","root","","crud_mgt");
 	$id = $_GET['id'];
 	$sql = "DELETE FROM `stud` WHERE id='$id'";
 	mysqli_query($con,$sql);

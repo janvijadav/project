@@ -1,112 +1,109 @@
-<?php                                                                         
-	include('config.php'); 
-	include('header.php'); 
-	if(isset($_POST['txtpname']))
+<?php
+	$con=mysqli_connect("localhost","root","","janvi");
+	if(isset($_POST['txtnm']))
 	{
-		$pname = $_POST['txtpname'];
-		$cname = $_POST['txtcname'];
-		$cno = $_POST['txtcno'];
-		$pamt = $_POST['txtpamount'];
-		$psdate = $_POST['txtrdate'];
-		$pddate = $_POST['txtddate'];
-		$status = "P";
-		$sql = "INSERT INTO `project`(`proj_name`, `client_name`, `client_number`, `proj_amount`, `prdate`, `pddate`, `status`) VALUES ('$pname','$cname','$cno','$pamt','$psdate','$pddate','$status')";
-		if(mysqli_query($con,$sql))
-		{
-			echo "<script>toastr.success('Project Added!');</script>";
-		}
+		$nm=$_POST['txtnm'];
+		$cs=$_POST['txtcs'];
+		$cno=$_POST['txtcno'];
+		$sql="INSERT INTO `stud`(`student_name`, `course`, `contact_no`) VALUES ('$nm','$cs','$cno')";
+		mysqli_query($con,$sql);
 	}
-	$sql = "select * from `project`";
-	$res = mysqli_query($con,$sql);
-	$p = 0;
-	$c = 0;
-	$o = 0;
-	while($row = mysqli_fetch_assoc($res))
-	{
-		if($row['status'] == "P")
-		{
-			$p = $p+1;
-		}
-		else if($row['status'] == "C")
-		{
-			$c = $c+1;
-		}
-		else if($row['status'] == "O")
-		{
-			$o = $o+1;
-		}
-	}
-	
 ?>
+		
+<html>
+	<head>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.2/css/bootstrap.min.css"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.2/js/bootstrap.bundle.min.js"></script>
+	</head>
 	<body>
-		<form action="index.php" method="POST">
-			<div class="container-fluid mt-2 mb-2">
-				<div class="row">
-					<div class="col">
-						<div class="card bg-primary text-center text-white bg-gradient">
-							<div class="card-header">
-								<h5>Ongoing Projects</h5>
-							</div>
-							<div class="card-body">
-								<h1><?php echo $o; ?></h1>
-							</div>
-							<div class="card-footer">
-								<h5><a class="text-white text-decoration-none" href="project_list.php?status=O">Click to view</a></h5>
-							</div>
-						</div>						
-					</div>
-					<div class="col">
-						<div class="card bg-primary text-center text-white bg-gradient">
-							<div class="card-header">
-								<h5>Pending Projects</h5>
-							</div>
-							<div class="card-body">
-								<h1><?php echo $p; ?></h1>
-							</div>
-							<div class="card-footer">
-								<h5><a class="text-white text-decoration-none" href="project_list.php?status=P">Click to view</a></h5>
-							</div>
-						</div>						
-					</div>
-					<div class="col">
-						<div class="card bg-primary text-center text-white bg-gradient">
-							<div class="card-header">
-								<h5>Completed Projects</h5>
-							</div>
-							<div class="card-body">
-								<h1><?php echo $c; ?></h1>
-							</div>
-							<div class="card-footer">
-								<h5><a class="text-white text-decoration-none" href="project_list.php?status=C">Click to view</a></h5>
-							</div>
-						</div>						
-					</div>
-				</div>
-			</div>
-			<a href="#" class="float bg-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="fa fa-plus fa-3x my-float"></i></a>
-		</form>
-		<div class="modal fade  text-center" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+	<div class="container mt-2">
+	<form action="index.php" method="POST">
+		<input type="text" name="txtnm" class="form-control" placeholder="Enter name" required></br>
+		<input type="text" name="txtcs" class="form-control" placeholder="Enter course" required></br>
+		<input type="text" name="txtcno" class="form-control" placeholder="Enter contact no." required></br>
+		<center><input type="submit" class="btn btn-success" value="submit"></center>
+	</form>
+	<table class="table table-bordered text-center">
+	<tr>
+	<th>id
+	<th>Student name
+	<th>Course
+	<th>Contact no.
+	<th>Action
+	</tr>
+<?php
+	$sql="SELECT * FROM `stud`";
+	$res=mysqli_query($con,$sql);
+	$i=1;
+	while($row=mysqli_fetch_assoc($res))
+	{
+?>
+	<tr>
+	<td><?php echo $i; ?>
+	<td><?php echo $row['student_name']?>
+	<td><?php echo $row['course']?>
+	<td><?php echo $row['contact_no']?>
+	<td><a class="btn btn-danger" href="delete.php?id=<?php echo $row['id']; ?>">Delete</a>
+	<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-bs-nm="<?php echo $row['student_name']; ?>" data-bs-cs="<?php echo $row['course'];?>" data-bs-cno="<?php echo $row['contact_no'];?>" data-bs-id="<?php echo $row['id']; ?>">Update</button>
+	<?php
+		$i++;
+	}
+	?>
+	</table>
+	</div>
+	<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
-			  <div class="modal-header">
-				<h5 class="modal-titl" id="staticBackdropLabel">Add Project</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			  </div>
-			  <div class="modal-body">
-				<form action="index.php" method="POST">
-					<input type="text" name="txtpname" class="form-control" placeholder="Enter Project Name" required></br>
-					<input type="text" name="txtcname" class="form-control" placeholder="Enter Client Name" required></br>
-					<input type="text" name="txtcno" class="form-control" placeholder="Enter Client Number" required></br>
-					<input type="text" name="txtpamount" class="form-control" placeholder="Enter Project Amount" required></br>
-					<input type="date" name="txtrdate" class="form-control" required></br>
-					<input type="date" name="txtddate" class="form-control" required>
-			  </div>
-			  <div class="modal-footer">
-				<input type="submit" class="btn btn-primary w-100" value="Save Project">
-				</form>
-			  </div>
-			</div>
-		  </div>
-		</div>
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">Update Record</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+			<form action="index.php" method="POST">
+				<div class="mb-3">
+					<input type="text" name="txtsnm" class="form-control"  placeholder="Enter student name" id="snm">
+					<input type="text" name="txtid" class="form-control" id="id" hidden>
+				</div>
+				<div class="mb-3">
+					<input type="text" name="txtcor" class="form-control" placeholder="Enter course" id="cor">
+				</div>
+				<div class="mb-3">
+					<input type="text" name="txtcon" class="form-control" placeholder="Enter contact" id="con">
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary w-100">Update</button>
+				</div>
+			</form>
+				</div>
+			</div>      
+		</div>	
+	</div>
 	</body>
 </html>
+<script>
+	const exampleModal = document.getElementById('staticBackdrop')
+	exampleModal.addEventListener('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const nm = button.getAttribute('data-bs-nm')
+    const cs = button.getAttribute('data-bs-cs')
+	const cno = button.getAttribute('data-bs-cno')
+    const id = button.getAttribute('data-bs-id')
+    const modalTitle = exampleModal.querySelector('.modal-title')
+	modalTitle.textContent = `Update Record ID ${id}`
+    document.getElementById('snm').value = nm;
+	document.getElementById('cor').value = cs;
+	document.getElementById('con').value = cno;
+	document.getElementById('id').value = id;
+})
+</script>
+<?php
+	if(isset($_POST['txtid']))
+	{
+		$id = $_POST['txtid'];
+		$nm = $_POST['txtsnm'];
+		$cs= $_POST['txtcor'];
+		$cno = $_POST['txtcon'];
+		$sql = "UPDATE `stud` SET `student_name`='$nm',`course`='$cs' ,`contact_no`='$cno' WHERE `id`='$id'";
+		mysqli_query($con,$sql);
+	}
+?>
