@@ -1,0 +1,11 @@
+
+	SELECT * FROM `project` WHERE 1
+	
+	INSERT INTO `project`(`id`, `proj_name`, `client_name`, `client_number`, `proj_amount`, `prdate`, `pddate`, `status`) VALUES ('[value-1]','[value-2]','[value-3]','[value-4]','[value-5]','[value-6]','[value-7]','[value-8]')
+	
+	UPDATE `project` SET `id`='[value-1]',`proj_name`='[value-2]',`client_name`='[value-3]',`client_number`='[value-4]',`proj_amount`='[value-5]',`prdate`='[value-6]',`pddate`='[value-7]',`status`='[value-8]' WHERE 1
+	
+	DELETE FROM `project` WHERE 0
+	
+	SELECT `id`, `proj_name`, `client_name`, `client_number`, `proj_amount`, `prdate`, `pddate`, `status` FROM `project` WHERE 1
+	
